@@ -18,40 +18,40 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 """
-bitcoin-python - Easy-to-use Bitcoin API client
+kimocoin-python - Easy-to-use KimoCoin API client
 """
 
 
 def connect_to_local(filename=None):
     """
-    Connect to default bitcoin instance owned by this user, on this machine.
+    Connect to default kimocoin instance owned by this user, on this machine.
 
-    Returns a :class:`~bitcoinrpc.connection.BitcoinConnection` object.
+    Returns a :class:`~kimocoinrpc.connection.BitcoinConnection` object.
 
     Arguments:
 
         - `filename`: Path to a configuration file in a non-standard location (optional)
     """
-    from bitcoinrpc.connection import BitcoinConnection
-    from bitcoinrpc.config import read_default_config
+    from kimocoinrpc.connection import BitcoinConnection
+    from kimocoinrpc.config import read_default_config
 
     cfg = read_default_config(filename)
     if cfg is None:
         cfg = {}
-    port = int(cfg.get('rpcport', '18332' if cfg.get('testnet') else '8332'))
+    port = int(cfg.get('rpcport', '11988' if cfg.get('testnet') else '1988'))
     rpcuser = cfg.get('rpcuser', '')
     rpcpassword = cfg.get('rpcpassword', '')
 
     return BitcoinConnection(rpcuser, rpcpassword, 'localhost', port)
 
 
-def connect_to_remote(user, password, host='localhost', port=8332,
+def connect_to_remote(user, password, host='localhost', port=1988,
                       use_https=False):
     """
-    Connect to remote or alternative local bitcoin client instance.
+    Connect to remote or alternative local kimocoin client instance.
 
-    Returns a :class:`~bitcoinrpc.connection.BitcoinConnection` object.
+    Returns a :class:`~kimocoinrpc.connection.BitcoinConnection` object.
     """
-    from bitcoinrpc.connection import BitcoinConnection
+    from kimocoinrpc.connection import BitcoinConnection
 
     return BitcoinConnection(user, password, host, port, use_https)

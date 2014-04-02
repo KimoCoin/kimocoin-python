@@ -18,8 +18,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 """
-Utilities for reading bitcoin configuration files.
+Utilities for reading kimocoin configuration files.
 """
+
+import os
 
 
 def read_config_file(filename):
@@ -46,27 +48,15 @@ def read_config_file(filename):
 
 def read_default_config(filename=None):
     """
-    Read bitcoin default configuration from the current user's home directory.
+    Read kimocoin default configuration from the current user's home directory.
 
     Arguments:
 
     - `filename`: Path to a configuration file in a non-standard location (optional)
     """
     if filename is None:
-        import os
-        import platform
-        home = os.getenv("HOME")
-        if not home:
-            raise IOError("Home directory not defined, don't know where to look for config file")
-
-        if platform.system() == "Darwin":
-            location = 'Library/Application Support/Bitcoin/bitcoin.conf'
-        else:
-            location = '.bitcoin/bitcoin.conf'
-        filename = os.path.join(home, location)
-
+        filename = os.path.expanduser("~/.kimocoin/kimocoin.conf")
     elif filename.startswith("~"):
-        import os
         filename = os.path.expanduser(filename)
 
     try:

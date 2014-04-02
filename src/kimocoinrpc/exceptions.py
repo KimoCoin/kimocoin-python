@@ -24,9 +24,9 @@ Exception definitions.
 
 class BitcoinException(Exception):
     """
-    Base class for exceptions received from Bitcoin server.
+    Base class for exceptions received from KimoCoin server.
 
-    - *code* -- Error code from ``bitcoind``.
+    - *code* -- Error code from ``kimocoind``.
     """
     # Standard JSON-RPC 2.0 errors
     INVALID_REQUEST  = -32600,
@@ -46,7 +46,7 @@ class BitcoinException(Exception):
     DESERIALIZATION_ERROR       = -22 # Error parsing or validating structure in raw format
 
     # P2P client errors
-    CLIENT_NOT_CONNECTED        = -9  # Bitcoin is not connected
+    CLIENT_NOT_CONNECTED        = -9  # KimoCoin is not connected
     CLIENT_IN_INITIAL_DOWNLOAD  = -10 # Still downloading initial blocks
 
     # Wallet errors
@@ -87,7 +87,7 @@ class TransportException(Exception):
 ##### General application defined errors
 class SafeMode(BitcoinException):
     """
-    Operation denied in safe mode (run ``bitcoind`` with ``-disablesafemode``).
+    Operation denied in safe mode (run ``kimocoind`` with ``-disablesafemode``).
     """
 
 
@@ -219,7 +219,7 @@ _exception_map = {
 
 def wrap_exception(error):
     """
-    Convert a JSON error object to a more specific Bitcoin exception.
+    Convert a JSON error object to a more specific KimoCoin exception.
     """
     # work around to temporarily fix https://github.com/bitcoin/bitcoin/issues/3007
     if error['code'] == BitcoinException.WALLET_ERROR and error['message'] == u'Insufficient funds':

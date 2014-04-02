@@ -18,32 +18,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 """
-Connect to Bitcoin server via JSON-RPC.
+Connect to KimoCoin server via JSON-RPC.
 """
-from bitcoinrpc.proxy import AuthServiceProxy
-from bitcoinrpc.exceptions import (wrap_exception, BitcoinException,
+from kimocoinrpc.proxy import AuthServiceProxy
+from kimocoinrpc.exceptions import (wrap_exception, BitcoinException,
                                    WalletPassphraseIncorrect,
                                    WalletAlreadyUnlocked)
-from bitcoinrpc.data import (ServerInfo, AccountInfo, AddressInfo, TransactionInfo,
+from kimocoinrpc.data import (ServerInfo, AccountInfo, AddressInfo, TransactionInfo,
                              AddressValidation, WorkItem, MiningInfo)
 
 
 class BitcoinConnection(object):
     """
-    A BitcoinConnection object defines a connection to a bitcoin server.
+    A BitcoinConnection object defines a connection to a kimocoin server.
     It is a thin wrapper around a JSON-RPC API connection.
 
     Arguments to constructor:
 
     - *user* -- Authenticate as user.
     - *password* -- Authentication password.
-    - *host* -- Bitcoin JSON-RPC host.
-    - *port* -- Bitcoin JSON-RPC port.
+    - *host* -- KimoCoin JSON-RPC host.
+    - *port* -- KimoCoin JSON-RPC port.
     """
-    def __init__(self, user, password, host='localhost', port=8332,
+    def __init__(self, user, password, host='localhost', port=1988,
                  use_https=False):
         """
-        Create a new bitcoin server connection.
+        Create a new kimocoin server connection.
         """
         url = 'http{s}://{user}:{password}@{host}:{port}/'.format(
             s='s' if use_https else '',
@@ -53,7 +53,7 @@ class BitcoinConnection(object):
 
     def stop(self):
         """
-        Stop bitcoin server.
+        Stop kimocoin server.
         """
         self.proxy.stop()
 
@@ -126,20 +126,20 @@ class BitcoinConnection(object):
 
     def getinfo(self):
         """
-        Returns an :class:`~bitcoinrpc.data.ServerInfo` object containing various state info.
+        Returns an :class:`~kimocoinrpc.data.ServerInfo` object containing various state info.
         """
         return ServerInfo(**self.proxy.getinfo())
 
     def getmininginfo(self):
         """
-        Returns an :class:`~bitcoinrpc.data.MiningInfo` object containing various
+        Returns an :class:`~kimocoinrpc.data.MiningInfo` object containing various
         mining state info.
         """
         return MiningInfo(**self.proxy.getmininginfo())
 
     def getnewaddress(self, account=None):
         """
-        Returns a new bitcoin address for receiving payments.
+        Returns a new kimocoin address for receiving payments.
 
         Arguments:
 
@@ -154,7 +154,7 @@ class BitcoinConnection(object):
 
     def getaccountaddress(self, account):
         """
-        Returns the current bitcoin address for receiving payments to an account.
+        Returns the current kimocoin address for receiving payments to an account.
 
         Arguments:
 
@@ -169,7 +169,7 @@ class BitcoinConnection(object):
 
         Arguments:
 
-        - *bitcoinaddress* -- Bitcoin address to associate.
+        - *bitcoinaddress* -- KimoCoin address to associate.
         - *account* -- Account to associate the address to.
 
         """
@@ -181,7 +181,7 @@ class BitcoinConnection(object):
 
         Arguments:
 
-        - *bitcoinaddress* -- Bitcoin address to get account for.
+        - *bitcoinaddress* -- KimoCoin address to get account for.
         """
         return self.proxy.getaccount(bitcoinaddress)
 
@@ -201,7 +201,7 @@ class BitcoinConnection(object):
 
         Arguments:
 
-        - *bitcoinaddress* -- Bitcoin address to send to.
+        - *bitcoinaddress* -- KimoCoin address to send to.
         - *amount* -- Amount to send (float, rounded to the nearest 0.00000001).
         - *minconf* -- Minimum number of confirmations required for transferred balance.
         - *comment* -- Comment for transaction.
@@ -217,7 +217,7 @@ class BitcoinConnection(object):
 
     def getreceivedbyaddress(self, bitcoinaddress, minconf=1):
         """
-        Returns the total amount received by a bitcoin address in transactions with at least a
+        Returns the total amount received by a kimocoin address in transactions with at least a
         certain number of confirmations.
 
         Arguments:
@@ -294,7 +294,7 @@ class BitcoinConnection(object):
         >>> conn.createrawtransaction(
                 [{"txid": "a9d4599e15b53f3eb531608ddb31f48c695c3d0b3538a6bda871e8b34f2f430c",
                   "vout": 0}],
-                {"mkZBYBiq6DNoQEKakpMJegyDbw2YiNQnHT":50})
+                {"KkZBYBiq6DNoQEKakpMJegyDbw2YiNQnHT":50})
 
 
         Arguments:
@@ -344,7 +344,7 @@ class BitcoinConnection(object):
         """
         Returns a list of addresses.
 
-        Each address is represented with a :class:`~bitcoinrpc.data.AddressInfo` object.
+        Each address is represented with a :class:`~kimocoinrpc.data.AddressInfo` object.
 
         Arguments:
 
@@ -373,7 +373,7 @@ class BitcoinConnection(object):
         """
         Returns a list of accounts.
 
-        Each account is represented with a :class:`~bitcoinrpc.data.AccountInfo` object.
+        Each account is represented with a :class:`~kimocoinrpc.data.AccountInfo` object.
 
         Arguments:
 
@@ -388,7 +388,7 @@ class BitcoinConnection(object):
         """
         Returns a list of the last transactions for an account.
 
-        Each transaction is represented with a :class:`~bitcoinrpc.data.TransactionInfo` object.
+        Each transaction is represented with a :class:`~kimocoinrpc.data.TransactionInfo` object.
 
         Arguments:
 
@@ -416,9 +416,9 @@ class BitcoinConnection(object):
 
     def validateaddress(self, validateaddress):
         """
-        Validate a bitcoin address and return information for it.
+        Validate a KimoCoin address and return information for it.
 
-        The information is represented by a :class:`~bitcoinrpc.data.AddressValidation` object.
+        The information is represented by a :class:`~kimocoinrpc.data.AddressValidation` object.
 
         Arguments: -- Address to validate.
 
@@ -465,14 +465,14 @@ class BitcoinConnection(object):
                  comment_to=None):
         """
         Sends amount from account's balance to bitcoinaddress. This method will fail
-        if there is less than amount bitcoins with minconf confirmations in the account's
+        if there is less than amount kimocoins with minconf confirmations in the account's
         balance (unless account is the empty-string-named default account; it
         behaves like the sendtoaddress method). Returns transaction ID on success.
 
         Arguments:
 
         - *fromaccount* -- Account to send from.
-        - *tobitcoinaddress* -- Bitcoin address to send to.
+        - *tobitcoinaddress* -- KimoCoin address to send to.
         - *amount* -- Amount to send (float, rounded to the nearest 0.01).
         - *minconf* -- Minimum number of confirmations required for transferred balance.
         - *comment* -- Comment for transaction.
@@ -490,14 +490,14 @@ class BitcoinConnection(object):
     def sendmany(self, fromaccount, todict, minconf=1, comment=None):
         """
         Sends specified amounts from account's balance to bitcoinaddresses. This method will fail
-        if there is less than total amount bitcoins with minconf confirmations in the account's
+        if there is less than total amount kimocoins with minconf confirmations in the account's
         balance (unless account is the empty-string-named default account; Returns transaction ID
         on success.
 
         Arguments:
 
         - *fromaccount* -- Account to send from.
-        - *todict* -- Dictionary with Bitcoin addresses as keys and amounts as values.
+        - *todict* -- Dictionary with KimoCoin addresses as keys and amounts as values.
         - *minconf* -- Minimum number of confirmations required for transferred balance.
         - *comment* -- Comment for transaction.
 
@@ -527,7 +527,7 @@ class BitcoinConnection(object):
         Get work for remote mining, or submit result.
         If data is specified, the server tries to solve the block
         using the provided data and returns :const:`True` if it was successful.
-        If not, the function returns formatted hash data (:class:`~bitcoinrpc.data.WorkItem`)
+        If not, the function returns formatted hash data (:class:`~kimocoinrpc.data.WorkItem`)
         to work on.
 
         Arguments:
@@ -569,7 +569,7 @@ class BitcoinConnection(object):
         - *timeout* -- Time in seconds to keep the wallet unlocked
                        (by keeping the passphrase in memory).
 
-        - *dont_raise* -- instead of raising `~bitcoinrpc.exceptions.WalletPassphraseIncorrect`
+        - *dont_raise* -- instead of raising `~kimocoinrpc.exceptions.WalletPassphraseIncorrect`
                           return False.
         """
         try:
@@ -598,7 +598,7 @@ class BitcoinConnection(object):
 
         Arguments:
 
-        - *dont_raise* -- instead of raising `~bitcoinrpc.exceptions.WalletPassphraseIncorrect`
+        - *dont_raise* -- instead of raising `~kimocoinrpc.exceptions.WalletPassphraseIncorrect`
                           return False.
         """
         try:
@@ -615,7 +615,7 @@ class BitcoinConnection(object):
 
         Arguments:
 
-        - *address* -- Bitcoin address whose private key should be returned.
+        - *address* -- KimoCoin address whose private key should be returned.
         """
         return self.proxy.dumpprivkey(address)
 
@@ -623,7 +623,7 @@ class BitcoinConnection(object):
         """
         Sign messages, returns the signature
 
-        :param address: Bitcoin address used to sign a message
+        :param address: KimoCoin address used to sign a message
         :type address: str or unicode
         :param message: The message to sign
         :type message: str or unicode
@@ -635,7 +635,7 @@ class BitcoinConnection(object):
         """
         Verify a signed message
 
-        :param address: Bitcoin address used to sign a message
+        :param address: KimoCoin address used to sign a message
         :type address: str or unicode
         :param signature: The signature
         :type signature: unicode
